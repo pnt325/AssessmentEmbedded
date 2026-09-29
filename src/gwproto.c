@@ -87,14 +87,17 @@ int gwp_encode(uint16_t seq, const can_frame_t *frames, size_t n,
         out[index++] = frame->dlc;
 
         /** data */
-        out[index++] = frame->data[0];
-        out[index++] = frame->data[1];
-        out[index++] = frame->data[2];
-        out[index++] = frame->data[3];
-        out[index++] = frame->data[4];
-        out[index++] = frame->data[5];
-        out[index++] = frame->data[6];
-        out[index++] = frame->data[7];
+        for (int j = 0; j < 8; j++)
+        {
+            if (j >= frame->dlc)
+            {
+                out[index++] = 0;
+            }
+            else
+            {
+                out[index++] = frame->data[j];
+            }
+        }
     }
 
     uint16_t crc = gwp_crc16(out, index);
