@@ -30,3 +30,22 @@ cmake --build --preset test
 ```
 
 Build output goes to `out/build/Default`.
+
+
+## AI Support
+
+- Generate and configure CMake.
+- Generate the unit test
+
+## Key deisgn decision
+
+## Known Limitation
+
+- The canbuf head tail is not support atomic
+- The gwp_decode not finish yet
+
+## TODO
+
+- Atomic support canbuf
+- gateway
+
