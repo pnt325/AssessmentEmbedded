@@ -34,5 +34,6 @@ extern int g_failed;
     } while (0)
 
 void test_canbuf(void);
+void test_gwproto(void);
 
 #endif /* TEST_H */

@@ -16,6 +16,7 @@ target_compile_options(gateway PRIVATE -Wall -Wextra -Wpedantic)
 add_executable(tests
     test/test.c
     test/test_canbuf.c
+    test/test_gwproto.c
 )
 target_link_libraries(tests PRIVATE gateway)
 target_compile_options(tests PRIVATE -Wall -Wextra -Wpedantic)
