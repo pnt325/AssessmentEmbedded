@@ -13,7 +13,10 @@ add_library(gateway STATIC
 target_include_directories(gateway PUBLIC include)
 target_compile_options(gateway PRIVATE -Wall -Wextra -Wpedantic)
 
-add_executable(tests test/main.c)
+add_executable(tests
+    test/test.c
+    test/test_canbuf.c
+)
 target_link_libraries(tests PRIVATE gateway)
 target_compile_options(tests PRIVATE -Wall -Wextra -Wpedantic)
 
