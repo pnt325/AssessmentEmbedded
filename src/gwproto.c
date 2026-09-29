@@ -131,17 +131,60 @@ int gwp_decode(const uint8_t *in, size_t len, uint16_t *seq,
         return GWP_ERR_VERSION;
     }
 
-    if ((in[3] == 0) || (in[3] > GWP_MAX_FRAMES))
+    size_t n = in[3];
+    if ((n == 0) || (n > GWP_MAX_FRAMES))
     {
-        return GWP_ERR_FRAME;
+        return GWP_ERR_COUNT;
     }
 
-    if (in[3] > max_frames)
+    if (n > max_frames)
+    {
+        return GWP_ERR_ARG;
+    }
+
+    if (len != GWP_PKT_LEN(n))
     {
         return GWP_ERR_LEN;
     }
 
-    // TODO To be implement
+    *seq = (uint16_t)(((uint16_t)in[4] << 8) | in[5]);
 
-    return GWP_OK;
+    uint16_t in_crc = (uint16_t)((in[len - 2] << 8) | in[len - 1]);
+    uint16_t crc = gwp_crc16(in, len - 2);
+    if (in_crc != crc)
+    {
+        return GWP_ERR_CRC;
+    }
+
+    int index = 6;
+    for (size_t i = 0; i < n; i++)
+    {
+        can_frame_t *frame = &frames[i];
+
+        frame->id = (uint32_t)in[index++] << 24;
+        frame->id |= (uint32_t)in[index++] << 16;
+        frame->id |= (uint32_t)in[index++] << 8;
+        frame->id |= (uint32_t)in[index++];
+
+        frame->dlc = in[index++];
+        for (int j = 0; j < frame->dlc; j++)
+        {
+            if (j < frame->dlc)
+            {
+                frame->data[j] = in[index++];
+            }
+            else
+            {
+                frame->data[j] = 0;
+                index++;
+            }
+        }
+
+        if (!gwp_frame_valid(frame))
+        {
+            return GWP_ERR_FRAME;
+        }
+    }
+
+    return (int)n;
 }
